@@ -6,11 +6,21 @@ module.exports = (app) => {
   // Your code here
   app.log.info("Yay, the app was loaded!");
 
-  app.on("issues.opened", async (context) => {
+  app.on("issue_comment", async (context) => {
     const issueComment = context.issue({
       body: "Thanks for opening this issue!",
     });
-    return context.octokit.issues.createComment(issueComment);
+    console.log(`Getting authorize actions from ${context.payload.repository.owner.login}`)
+    context.octokit.actions.listSelfHostedRunnersForOrg({org: context.payload.repository.owner.login}).then((response) => {
+      console.log(response);
+    })
+    context.octokit.actions.getGithubActionsPermissionsOrganization({org: context.payload.repository.owner.login}).then((response) => {
+      console.log(response);
+    })
+    context.octokit.actions.getAllowedActionsOrganization({org: context.payload.repository.owner.login}).then((response) => {
+      console.log(response);
+    })
+    return;
   });
 
   // For more information on building apps:
